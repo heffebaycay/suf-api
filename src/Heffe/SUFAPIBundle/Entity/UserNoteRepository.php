@@ -28,6 +28,7 @@ class UserNoteRepository extends EntityRepository
             ->join('un.target', 't')
             ->where('t.steamId = :steamId')
             ->andWhere('un.removed = false')
+            ->orderBy('un.dateCreated', 'desc')
             ->setParameter('steamId', $steamId)
             ;
 
@@ -82,9 +83,6 @@ class UserNoteRepository extends EntityRepository
                 return null;
             }
 
-            $id1 = $newNote->getAuthor()->getId();
-            $id2 = $user->getId();
-
             if($newNote->getAuthor()->getId() != $user->getId())
             {
                 // Actor isn't the original author
@@ -125,6 +123,7 @@ class UserNoteRepository extends EntityRepository
             $newNote->setAuthor( $user );
             $newNote->setTarget( $target );
             $newNote->setDateCreated(new \DateTime());
+            $newNote->setRemoved(false);
 
             $this->_em->persist($user);
             $this->_em->persist($target);

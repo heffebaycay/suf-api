@@ -55,7 +55,7 @@ class UserNote
      * @ORM\Column(name="date_updated", type="datetime", nullable=true)
      *
      * @Expose
-     * @Type("DateTime")
+     * @Type("DateTime<'Y-m-d @ H:i'>")
      */
     private $dateUpdated;
 
