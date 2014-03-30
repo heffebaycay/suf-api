@@ -116,6 +116,7 @@ class UserNoteRepository extends EntityRepository
             {
                 $target = new SteamUser();
                 $target->setSteamId( $userNote->getTarget()->getSteamId() );
+                $target->setDateCreated(new \DateTime());
             }
 
             $newNote = new UserNote();
