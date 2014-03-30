@@ -1,0 +1,14 @@
+{# Heffe/SUFAPIBundle/Resources/views/Default/index.html.twig #}
+
+{% extends "HeffeSUFAPIBundle:Default:layout.html.twig" %}
+
+{% block body %}
+    <div class="jumbotron">
+        <p class="lead">Please log in with your Steam account to access SUF API Manager</p>
+        <p>
+            <a href="{{ path('heffe_sufapi_login') }}" title="Sign in through Steam">
+                <img src="http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_large_noborder.png" alt="Sign in through Steam"/>
+            </a>
+        </p>
+    </div>
+{% endblock %}

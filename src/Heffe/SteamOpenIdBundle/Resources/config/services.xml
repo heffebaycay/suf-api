@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="steam_openid.relying_party.light_open_id.class">Heffe\SteamOpenIdBundle\Bridge\RelyingParty\SteamOpenIdRelyingParty</parameter>
+    </parameters>
+
+    <services>
+        <service id="steam_openid.relying_party.light_open_id" class="%steam_openid.relying_party.light_open_id.class%">
+        </service>
+
+        <service id="heffe.steam.openid_user_manager" class="Heffe\SteamOpenIdBundle\Entity\OpenIdUserManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="fp_openid.identity_manager" />
+            <argument type="service" id="service_container" />
+        </service>
+        
+        <service id="steam_openid.relying_party.default" class="%fp_openid.relying_party.collection.class%">
+            <call method="append">
+                <argument type="service" id="fp_openid.relying_party.recovered_failure" />
+            </call>
+            <call method="append">
+                <argument type="service" id="steam_openid.relying_party.light_open_id" />
+            </call>
+        </service>
+    </services>
+    
+    <!--
+    <parameters>
+        <parameter key="heffe_steam_open_id.example.class">Heffe\SteamOpenIdBundle\Example</parameter>
+    </parameters>
+
+    <services>
+        <service id="heffe_steam_open_id.example" class="%heffe_steam_open_id.example.class%">
+            <argument type="service" id="service_id" />
+            <argument>plain_value</argument>
+            <argument>%parameter_name%</argument>
+        </service>
+    </services>
+    -->
+</container>

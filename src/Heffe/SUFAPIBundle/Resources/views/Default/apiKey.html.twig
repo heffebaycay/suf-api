@@ -1,0 +1,19 @@
+{# Heffe/SUFAPIBundle/Resources/views/Default/apiKey.html.twig #}
+
+{% extends "HeffeSUFAPIBundle:Default:layout.html.twig" %}
+
+{% block body %}
+    <div class="jumbotron">
+        <p>Your SUF API key</p>
+        <p>
+            {% if contract is null or contract.apiKey is empty %}
+                Key: <span>None</span>
+            {% else %}
+                Key: <span>{{ contract.apiKey }}</span>
+            {% endif %}
+        </p>
+        <form method="post" action="{{ path('heffe_sufapi_revoke_apikey') }}">
+            <button type="submit" class="btn btn-warning">Revoke my API key</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{# Heffe/SUFAPIBundle/Resources/views/Default/indexAuthenticated.html.twig #}
+
+{% extends "HeffeSUFAPIBundle:Default:layout.html.twig" %}
+
+{% block body %}
+    {% if is_granted("ROLE_MODERATOR") == false and is_granted("ROLE_VALVE") == false %}
+    <div class="alert alert-danger">
+        <p>
+            <strong>Error:</strong> It seems you don't have the required permissions to use this application.
+        </p>
+        <p>If you believe this is an error, please report this to the application administrator</p>
+    </div>
+    {% else %}
+        <div class="jumbotron">
+            <p class="lead">{{ "Welcome back, %s!"|format(app.security.token.user.persona) }}</p>
+        </div>
+    {% endif %}
+{% endblock %}

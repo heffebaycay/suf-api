@@ -1,0 +1,11 @@
+# app/config/routing.yml
+fp_openid_security:
+    resource: "@FpOpenIdBundle/Resources/config/routing/security.xml"
+
+heffe_sufapi:
+    resource: "@HeffeSUFAPIBundle/Resources/config/routing.yml"
+    prefix:   /
+
+heffe_sufapi_api:
+    resource: "@HeffeSUFAPIBundle/Resources/config/routing_api.yml"
+    prefix:   /api

@@ -1,0 +1,40 @@
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+
+    role_hierarchy:
+        ROLE_MODERATOR: ROLE_USER
+        ROLE_VALVE: ROLE_MODERATOR
+        ROLE_ADMIN: ROLE_VALVE
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        openid_user_manager:
+            id: heffe.steam.openid_user_manager
+        in_memory:
+            memory:
+                users:
+                    user:  { password: userpass, roles: [ 'ROLE_USER' ] }
+                    admin: { password: adminpass, roles: [ 'ROLE_ADMIN' ] }
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            pattern: ^/
+            fp_openid:
+                create_user_if_not_exists: true
+                provider: openid_user_manager
+                relying_party: steam_openid.relying_party.default
+                login_path: /login
+            logout: true
+            anonymous: true
+
+    access_control:
+        - { path: ^/login_openid$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/.*, role: ROLE_ADMIN }
+        - { path: ^/api/.*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        #- { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, requires_channel: https }

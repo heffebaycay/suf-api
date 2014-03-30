@@ -1,0 +1,7 @@
+heffe_sufapi_api_getusernotesforuser_v1:
+    pattern: /GetUserNotesForUser/v1/
+    defaults: { _controller: HeffeSUFAPIBundle:API:getUserNotesForUser }
+
+heffe_sufapi_api_updateusernote_v1:
+    pattern: /UpdateUserNote/v1/
+    defaults: { _controller: HeffeSUFAPIBundle:API:updateUserNote }

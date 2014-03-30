@@ -1,0 +1,11 @@
+parameters:
+    heffe_sufapi.webapi_key: ''
+#    heffe_sufapi.example.class: Heffe\SUFAPIBundle\Example
+
+services:
+    heffe_sufapi.steamuserwebapi:
+        class: Heffe\SUFAPIBundle\Services\SteamUserWebAPI
+        arguments: [%heffe_sufapi.webapi_key%]
+#    heffe_sufapi.example:
+#        class: %heffe_sufapi.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
