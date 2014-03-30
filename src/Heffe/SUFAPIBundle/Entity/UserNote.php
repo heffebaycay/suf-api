@@ -81,6 +81,20 @@ class UserNote
      */
     private $target;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="removed", type="boolean")
+     */
+    private $removed;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date_removed", type="datetime", nullable=true)
+     */
+    private $dateRemoved;
+
 
     /**
      * Get id
@@ -205,5 +219,51 @@ class UserNote
     public function getTarget()
     {
         return $this->target;
+    }
+
+    /**
+     * Set removed
+     *
+     * @param boolean $removed
+     * @return UserNote
+     */
+    public function setRemoved($removed)
+    {
+        $this->removed = $removed;
+
+        return $this;
+    }
+
+    /**
+     * Get removed
+     *
+     * @return boolean 
+     */
+    public function getRemoved()
+    {
+        return $this->removed;
+    }
+
+    /**
+     * Set dateRemoved
+     *
+     * @param \DateTime $dateRemoved
+     * @return UserNote
+     */
+    public function setDateRemoved($dateRemoved)
+    {
+        $this->dateRemoved = $dateRemoved;
+
+        return $this;
+    }
+
+    /**
+     * Get dateRemoved
+     *
+     * @return \DateTime 
+     */
+    public function getDateRemoved()
+    {
+        return $this->dateRemoved;
     }
 }

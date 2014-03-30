@@ -5,3 +5,7 @@ heffe_sufapi_api_getusernotesforuser_v1:
 heffe_sufapi_api_updateusernote_v1:
     pattern: /UpdateUserNote/v1/
     defaults: { _controller: HeffeSUFAPIBundle:API:updateUserNote }
+
+heffe_sufapi_api_deleteusernote_v1:
+    pattern: /DeleteUserNote/v1/
+    defaults: { _controller: HeffeSUFAPIBundle:API:deleteUserNote }

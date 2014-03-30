@@ -20,6 +20,7 @@ class UserNoteRepository extends EntityRepository
         $qB
             ->join('un.target', 't')
             ->where('t.steamId = :steamId')
+            ->andWhere('un.removed = false')
             ->setParameter('steamId', $steamId)
             ;
 
@@ -128,4 +129,68 @@ class UserNoteRepository extends EntityRepository
         return $newNote;
     }
 
+
+    public function deleteUserNote($userNoteId, $key)
+    {
+        // Fetching the user matching the key
+        $query = $this->_em->createQuery(
+            'SELECT u FROM HeffeSteamOpenIdBundle:User u
+             JOIN HeffeSUFAPIBundle:ApiContract ac
+             WITH 1=1
+             JOIN ac.user u2
+             WHERE
+                u.id = u2.id
+                AND
+                ac.apiKey = :key
+            '
+        );
+        $query->setParameter('key', $key);
+
+        try
+        {
+            $user = $query->getSingleResult();
+        }
+        catch(NoResultException $nre)
+        {
+            $user = null;
+        }
+
+        if($user == null)
+        {
+            return null;
+        }
+
+
+        if($userNoteId > 0)
+        {
+            // Fetch user note to remove from the Database
+            $dbUserNote = $this->findOneBy(array('id' => $userNoteId));
+            if($dbUserNote != null)
+            {
+                // Only the author of the note is allowed to remove it
+                if($dbUserNote->getAuthor()->getId() == $user->getId())
+                {
+                    $dbUserNote->setRemoved(true);
+                    $dbUserNote->setDateRemoved(new \DateTime());
+
+                    $this->_em->persist($dbUserNote);
+                    $this->_em->flush();
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

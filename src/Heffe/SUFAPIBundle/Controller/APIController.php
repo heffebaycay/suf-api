@@ -74,4 +74,28 @@ class APIController extends Controller
         return $response;
     }
 
+    public function deleteUserNoteAction(Request $request)
+    {
+        $key = $request->query->get('key');
+        $this->checkApiKey($key);
+
+        $result = false;
+
+        $userNoteId = $request->request->get('id');
+        if(!empty($userNoteId))
+        {
+            $result = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote')->deleteUserNote($userNoteId, $key);
+        }
+
+        $output = array('success' => $result);
+
+        $serializer = Serializer\SerializerBuilder::create()->build();
+        $output = $serializer->serialize($output, 'json');
+
+        $response = new Response($output);
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
 }
