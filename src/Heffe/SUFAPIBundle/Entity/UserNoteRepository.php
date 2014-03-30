@@ -5,6 +5,7 @@ namespace Heffe\SUFAPIBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
 use Heffe\SteamOpenIdBundle\Entity\User;
+use Heffe\SUFAPIBundle\Services\DateService;
 
 /**
  * UserNoteRepository
@@ -14,6 +15,12 @@ use Heffe\SteamOpenIdBundle\Entity\User;
  */
 class UserNoteRepository extends EntityRepository
 {
+    public function convertDatesToLocal(UserNote $userNote, $offset)
+    {
+        $userNote->setDateCreated( DateService::convertDateToLocal($userNote->getDateCreated(), $offset) );
+        $userNote->setDateUpdated( DateService::convertDateToLocal($userNote->getDateUpdated(), $offset));
+    }
+
     public function getUserNotesForUser($steamId)
     {
         $qB = $this->createQueryBuilder("un");

@@ -29,14 +29,24 @@ class APIController extends Controller
     {
         $key = $request->query->get('key');
         $steamId = $request->query->get('steamid');
+        $offset = $request->query->get('offset');
+        if(empty($offset))
+        {
+            $offset = 0;
+        }
 
         // Check key
         $this->checkApiKey($key);
 
-        $userNotes = $this
-                        ->getDoctrine()
-                        ->getRepository('HeffeSUFAPIBundle:UserNote')
-                        ->getUserNotesForUser($steamId);
+        $userNoteRepo = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote');
+
+        $userNotes = $userNoteRepo->getUserNotesForUser($steamId);
+
+
+        foreach($userNotes as $userNote)
+        {
+            $userNoteRepo->convertDatesToLocal($userNote, $offset);
+        }
 
         $serializer = Serializer\SerializerBuilder::create()->build();
         $output = $serializer->serialize($userNotes, 'json');
@@ -52,6 +62,12 @@ class APIController extends Controller
         $key = $request->query->get('key');
         $this->checkApiKey($key);
 
+        $offset = $request->query->get('offset');
+        if(empty($offset))
+        {
+            $offset = 0;
+        }
+
         $serializer = Serializer\SerializerBuilder::create()->build();
         $requestContent = $request->getContent();
 
@@ -62,8 +78,10 @@ class APIController extends Controller
             // Deserialize request
             $userNote = $serializer->deserialize($requestContent, 'Heffe\SUFAPIBundle\Entity\UserNote', 'json');
 
-            $newUserNote = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote')->createOrUpdateUserNote($userNote, $key);
+            $userNoteRepo = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote');
 
+            $newUserNote = $userNoteRepo->createOrUpdateUserNote($userNote, $key);
+            $userNoteRepo->convertDatesToLocal($newUserNote, $offset);
         }
 
         $output = $serializer->serialize($newUserNote, 'json');
