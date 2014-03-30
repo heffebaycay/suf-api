@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use JMS\Serializer;
 
 
@@ -21,7 +21,7 @@ class APIController extends Controller
 
         if($contract == null || $contract->getRevoked() == true)
         {
-            throw new AccessDeniedException();
+            throw new HttpException(Response::HTTP_FORBIDDEN, "Invalid API Key");
         }
     }
 
@@ -81,7 +81,14 @@ class APIController extends Controller
             $userNoteRepo = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote');
 
             $newUserNote = $userNoteRepo->createOrUpdateUserNote($userNote, $key);
-            $userNoteRepo->convertDatesToLocal($newUserNote, $offset);
+            if($newUserNote != null)
+            {
+                $userNoteRepo->convertDatesToLocal($newUserNote, $offset);
+            }
+            else
+            {
+                throw new HttpException(Response::HTTP_BAD_REQUEST, "Failed to create or update UserNote");
+            }
         }
 
         $output = $serializer->serialize($newUserNote, 'json');
