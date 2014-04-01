@@ -1,0 +1,16 @@
+{# src/Heffe/SUFAPIBundle/Resources/views/UserNote/userNoteTemplate.html.twig #}
+<div class="userNoteBox">
+    <h5><a href="http://steamcommunity.com/profiles/{{ userNote.author.steamId }}">{{ userNote.author.persona }}</a> posted:</h5>
+    <div class="userNoteContent">
+        {{ userNote.content }}
+    </div>
+    <div class="userNoteBoxBottom">
+        <p>
+            Posted on {{ userNote.dateCreated|date('Y-m-d @ H:i') }}
+            {% if userNote.dateUpdated is not null %}
+                <br/>--- Last updated on {{ userNote.dateUpdated|date('Y-m-d @ H:i') }} ---
+            {% endif %}
+        </p>
+
+    </div>
+</div>

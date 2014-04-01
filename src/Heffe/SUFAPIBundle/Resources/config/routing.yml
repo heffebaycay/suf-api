@@ -13,3 +13,9 @@ heffe_sufapi_apikey:
 heffe_sufapi_revoke_apikey:
     pattern: /apiKey/revoke
     defaults: { _controller: HeffeSUFAPIBundle:Default:revokeApiKey }
+
+heffe_sufapi_getuser_bysteamid:
+    pattern: /profiles/{steamId64}
+    defaults: { _controller: HeffeSUFAPIBundle:SteamUser:getUserProfileBySteamId }
+    requirements:
+        steamId64: \d{17}

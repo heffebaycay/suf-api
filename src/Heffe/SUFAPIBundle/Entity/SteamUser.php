@@ -12,7 +12,7 @@ use JMS\Serializer\Annotation\SerializedName;
  * SteamUser
  *
  * @ORM\Table(name="steam_user")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Heffe\SUFAPIBundle\Entity\SteamUserRepository")
  *
  * @ExclusionPolicy("all")
  */
