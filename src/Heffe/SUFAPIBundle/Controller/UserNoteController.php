@@ -108,7 +108,7 @@ class UserNoteController extends Controller
                 $userNote = $formUserNote->toUserNote();
                 $userNote->setId($id);
 
-                $newNote = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote')->createOrUpdateUserNoteFromUserId($userNote, $user->getId());
+                $newNote = $userNoteRepo->createOrUpdateUserNoteFromUserId($userNote, $user->getId());
 
                 if($newNote != null)
                 {
@@ -130,6 +130,86 @@ class UserNoteController extends Controller
             array(
                 'form' => $form->createView(),
                 'target' => $target,
+            )
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_MODERATOR')")
+     */
+    public function removeUserNoteAction($steamId64, $id, Request $request)
+    {
+        $userNoteRepo = $this
+            ->getDoctrine()
+            ->getRepository('HeffeSUFAPIBundle:UserNote');
+
+        $userNote = $userNoteRepo->getUserNoteByIdAndTargetSteamID($id, $steamId64);
+
+        if($userNote == null)
+        {
+            // Failed to fetch requested user note
+            throw new HttpException(Response::HTTP_NOT_FOUND, "Requested User Note does not exist");
+        }
+
+        $user = $user = $this->get('security.context')->getToken()->getUser();
+        if($user->getSteamId() != $userNote->getAuthor()->getSteamId())
+        {
+            // User must be the original author
+            throw new HttpException(Response::HTTP_FORBIDDEN, "You do not have the right permissions to remove this item");
+        }
+
+        $target = $userNote->getTarget();
+
+        $formUserNote = new UserNoteFormModel();
+        $formUserNote->setSteamId64($steamId64);
+        $formUserNote->setContent($userNote->getContent());
+
+        $formBuilder = $this->createFormBuilder($formUserNote);
+        $formBuilder
+            ->add('id', 'hidden', array('error_bubbling' => true))
+        ;
+
+        $form = $formBuilder->getForm();
+
+        if($request->getMethod() == 'POST')
+        {
+            $form->handleRequest($request);
+
+            if($form->isValid())
+            {
+                $userNote = $formUserNote->toUserNote();
+                $userNote->setId($id);
+
+                $result = $userNoteRepo->deleteUserNoteFromUserId($userNote, $user->getId());
+
+                if($result == false)
+                {
+                    // Failed
+                    return $this->render(
+                        'HeffeSUFAPIBundle:UserNote:removeUserNote.html.twig',
+                        array(
+                            'form' => $form->createView(),
+                            'success' => false,
+                            'userNote' => $userNote
+                        )
+                    );
+                }
+                else
+                {
+                    // Success
+                    // Redirecting to target profile
+                    return $this->redirect(
+                        $this->generateUrl('heffe_sufapi_getuser_bysteamid', array('steamId64' => $target->getSteamId()))
+                    );
+                }
+            }
+        }
+
+        return $this->render(
+            'HeffeSUFAPIBundle:UserNote:removeUserNote.html.twig',
+            array(
+                'form' => $form->createView(),
+                'userNote' => $userNote
             )
         );
     }

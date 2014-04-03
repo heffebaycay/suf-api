@@ -32,3 +32,10 @@ heffe_sufapi_updateusernote:
     defaults: { _controller: HeffeSUFAPIBundle:UserNote:updateUserNote }
     requirements:
         steamId64: \d{17}
+        id: \d+
+
+heffe_sufapi_removeusernote:
+    pattern: /profiles/{steamId64}/usernotes/remove/{id}
+    defaults: { _controller: HeffeSUFAPIBundle:UserNote:removeUserNote }
+    requirements:
+        id: \d+

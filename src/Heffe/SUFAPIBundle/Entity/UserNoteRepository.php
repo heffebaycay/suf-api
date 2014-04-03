@@ -260,4 +260,46 @@ class UserNoteRepository extends EntityRepository
             return false;
         }
     }
+
+    public function deleteUserNoteFromUserId(UserNote $userNote, $userId)
+    {
+        // Fetching the full user object
+        $authorQuery = $this->_em->createQuery(
+            'SELECT u FROM HeffeSteamOpenIdBundle:User u
+             WHERE u.id = :userId
+            '
+        );
+        $authorQuery->setParameter('userId', $userId);
+
+        try
+        {
+            $author = $authorQuery->getSingleResult();
+        }
+        catch(NoResultException $nre)
+        {
+            // User cannot be null
+            return null;
+        }
+
+        if($userNote->getId() > 0)
+        {
+            // Fetch user note to remove from the Database
+            $dbUserNote = $this->findOneBy(array('id' => $userNote->getId()));
+            if($dbUserNote != null)
+            {
+                // Only the author of the note is allowed to remove it
+                if($dbUserNote->getAuthor()->getId() == $author->getId())
+                {
+                    $dbUserNote->setRemoved(true);
+                    $dbUserNote->setDateRemoved(new \DateTime());
+
+                    $this->_em->persist($dbUserNote);
+                    $this->_em->flush();
+
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

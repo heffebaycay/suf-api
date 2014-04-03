@@ -18,7 +18,7 @@
                 <span class="glyphicon glyphicon-edit"></span>
                 Edit note
             </a>
-            <a class="btn btn-default" href="">
+            <a class="btn btn-default" href="{{ path('heffe_sufapi_removeusernote', {'steamId64': userNote.target.steamId, 'id': userNote.id }) }}">
                 <span class="glyphicon glyphicon-remove"></span>
                 Remove note
             </a>
