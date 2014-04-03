@@ -1,0 +1,16 @@
+{# src/Heffe/SUFAPIBundle/Resources/views/SteamUser/profile.html.twig #}
+
+{% extends "HeffeSUFAPIBundle:Default:layout.html.twig" %}
+
+{% block body %}
+    {% if userNotes|length == 0 %}
+        <div class="alert alert-info">
+            No user notes on record for this user
+        </div>
+    {% else %}
+        <p class="lead">There are {{ userNotes|length }} notes on record for {{ steamUser.steamId }}:</p>
+        {% for userNote in userNotes %}
+            {% include 'HeffeSUFAPIBundle:UserNote:userNoteTemplate.html.twig' %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

@@ -96,6 +96,11 @@ class UserNote
     private $dateRemoved;
 
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     /**
      * Get id
      *

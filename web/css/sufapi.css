@@ -81,3 +81,41 @@ body {
         border-bottom: 0;
     }
 }
+
+h2
+{
+    border-bottom: 1px dotted #000000;
+    margin-bottom: 20px;
+    width: auto;
+}
+
+.userNoteBox
+{
+    padding: 20px 0px 2px 20px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    background-color: #eeeeee;
+}
+
+.userNoteBox h5
+{
+    font-weight: bold;
+}
+
+.userNoteContent
+{
+    padding: 10px 0px 10px 10px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    border: 1px solid #333333;
+}
+
+.userNoteBoxBottom p
+{
+    font-size: x-small;
+}
+
+#removeUserNoteContainer
+{
+    margin: 30px 0px 50px 20px;
+}

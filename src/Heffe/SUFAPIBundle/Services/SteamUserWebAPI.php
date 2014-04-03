@@ -11,6 +11,37 @@ class SteamUserWebAPI
         $this->apiKey = $apiKey;
     }
 
+    /**
+     * Fetches the Steam Level for a given Steam User
+     *
+     * @param string $steamId The SteamId of the user
+     * @return int The Steam Level of the user, or -1 on failure
+     */
+    public function getUserSteamLevel($steamId)
+    {
+        $methodURL = $this->getWebAPIUrl('IPlayerService', 'GetSteamLevel', 1, array('key' => $this->apiKey, 'steamid' => $steamId));
+
+        $jsonData = @file_get_contents($methodURL);
+        if($jsonData !== false)
+        {
+            $data = json_decode($jsonData);
+            if($data != null)
+            {
+                $level = $data->response->player_level;
+
+                return $level;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+        else
+        {
+            // Request failed
+            return -1;
+        }
+    }
 
     public function getUserPersonaName($steamId)
     {
