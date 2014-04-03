@@ -1,0 +1,43 @@
+{# src/Heffe/SUFAPIBundle/Resources/views/UserNote/updateUserNote.html.twig #}
+
+{% extends "HeffeSUFAPIBundle:Default:layout.html.twig" %}
+
+{% block body %}
+    <h2>Update user note for user {{ target.steamId }}</h2>
+
+    {% if success is defined and success == true %}
+        <div class="alert alert-success">
+            <strong>Success!</strong> User note successfully saved.
+        </div>
+    {% endif %}
+
+    {% if form.vars.errors is not empty %}
+        <div class="alert alert-danger">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+
+    <div class="col-sm-offset-1" style="margin-bottom: 30px; margin-top: 30px;">
+        <p>Please fill in the form below to create a new user note</p>
+    </div>
+
+    {{ form_start(form, {'attr': { 'class': 'form-horizontal' } }) }}
+
+    <div class="form-group">
+        {{ form_label(form.content, null, {'label_attr': {'class': 'col-sm-2 control-label'}} ) }}
+        <div class="col-sm-8">
+            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 12} }) }}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-8 col-sm-offset-2">
+            <button type="submit" class="btn btn-success">Update</button>
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+
+    <p><a href="{{ path('heffe_sufapi_getuser_bysteamid', {'steamId64': target.steamId }) }}">Return to user profile</a></p>
+
+{% endblock %}

@@ -28,44 +28,43 @@ class UserNoteRepository extends EntityRepository
             ->join('un.target', 't')
             ->where('t.steamId = :steamId')
             ->andWhere('un.removed = false')
-            ->orderBy('un.dateCreated', 'desc')
+            ->addOrderBy('un.dateUpdated', 'desc')
+            ->addOrderBy('un.dateCreated', 'desc')
             ->setParameter('steamId', $steamId)
             ;
 
         return $qB->getQuery()->getResult();
     }
 
-    public function createOrUpdateUserNote(UserNote $userNote, $key)
+    public function getUserNoteByIdAndTargetSteamID($id, $steamId)
     {
-        // Fetching the user matching the key
         $query = $this->_em->createQuery(
-            'SELECT u FROM HeffeSteamOpenIdBundle:User u
-             JOIN HeffeSUFAPIBundle:ApiContract ac
-             WITH 1=1
-             JOIN ac.user u2
+            'SELECT un FROM HeffeSUFAPIBundle:UserNote un
+             JOIN un.target t
              WHERE
-                u.id = u2.id
-                AND
-                ac.apiKey = :key
-            '
+                un.id = :id
+             AND
+                t.steamId = :steamId'
         );
-        $query->setParameter('key', $key);
+
+        $query->setParameter('id', $id);
+        $query->setParameter('steamId', $steamId);
 
         try
         {
-            $user = $query->getSingleResult();
+            $userNote = $query->getSingleResult();
         }
         catch(NoResultException $nre)
         {
-            $user = null;
+            $userNote = null;
         }
 
-        if($user == null)
-        {
-            return null;
-        }
+        return $userNote;
+    }
 
-        // Empty note is not valid
+    private function createOrUpdateUserNoteCommon(UserNote $userNote, User $user)
+    {
+        // Content of the user note cannot be empty
         $content = trim($userNote->getContent());
         if(empty($content))
         {
@@ -74,9 +73,9 @@ class UserNoteRepository extends EntityRepository
 
         $userNote->setContent( htmlspecialchars($userNote->getContent()) );
 
-
         if($userNote->getId() > 0)
         {
+            // User note already exists, so we are going to update it
             $newNote = $this->findOneBy(array('id' => $userNote->getId()));
             if($newNote == null)
             {
@@ -95,6 +94,8 @@ class UserNoteRepository extends EntityRepository
         }
         else
         {
+            // This is a new User note
+
             // Fetching the target
             $queryTarget = $this->_em->createQuery(
                 'SELECT su FROM HeffeSUFAPIBundle:SteamUser su
@@ -136,6 +137,65 @@ class UserNoteRepository extends EntityRepository
         return $newNote;
     }
 
+    public function createOrUpdateUserNote(UserNote $userNote, $key)
+    {
+        // Fetching the user matching the key
+        $query = $this->_em->createQuery(
+            'SELECT u FROM HeffeSteamOpenIdBundle:User u
+             JOIN HeffeSUFAPIBundle:ApiContract ac
+             WITH 1=1
+             JOIN ac.user u2
+             WHERE
+                u.id = u2.id
+                AND
+                ac.apiKey = :key
+            '
+        );
+        $query->setParameter('key', $key);
+
+        try
+        {
+            $user = $query->getSingleResult();
+        }
+        catch(NoResultException $nre)
+        {
+            $user = null;
+        }
+
+        if($user == null)
+        {
+            return null;
+        }
+
+        $newNote = $this->createOrUpdateUserNoteCommon($userNote, $user);
+
+        return $newNote;
+    }
+
+    public function createOrUpdateUserNoteFromUserId(UserNote $userNote, $userId)
+    {
+        // Fetching the full user object
+        $authorQuery = $this->_em->createQuery(
+            'SELECT u FROM HeffeSteamOpenIdBundle:User u
+             WHERE u.id = :userId
+            '
+        );
+        $authorQuery->setParameter('userId', $userId);
+
+        try
+        {
+            $author = $authorQuery->getSingleResult();
+        }
+        catch(NoResultException $nre)
+        {
+            // User cannot be null
+            return null;
+        }
+
+        $newUserNote = $this->createOrUpdateUserNoteCommon($userNote, $author);
+
+        return $newUserNote;
+    }
 
     public function deleteUserNote($userNoteId, $key)
     {
