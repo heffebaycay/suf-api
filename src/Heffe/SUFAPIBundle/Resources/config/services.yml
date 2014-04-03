@@ -1,5 +1,4 @@
 parameters:
-    heffe_sufapi.webapi_key: ''
 #    heffe_sufapi.example.class: Heffe\SUFAPIBundle\Example
 
 services:
