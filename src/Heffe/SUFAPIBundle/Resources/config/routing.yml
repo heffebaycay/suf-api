@@ -21,6 +21,14 @@ heffe_sufapi_getuser_bysteamid:
         steamId64: \d{17}
         trailingSlash: "\/?"
 
+heffe_sufapi_getuser_byvanityurl:
+    pattern: /id/{vanityURL}{trailingSlash}
+    defaults: { _controller: HeffeSUFAPIBundle:SteamUser:getUserProfileByVanityURL, trailingSlash: '' }
+    requirements:
+        vanityUrl: "[a-zA-Z0-9\-_]+"
+        trailingSlash: "\/?"
+
+
 heffe_sufapi_createusernote:
     pattern: /profiles/{steamId64}/usernotes/new
     defaults: { _controller: HeffeSUFAPIBundle:UserNote:createUserNote }

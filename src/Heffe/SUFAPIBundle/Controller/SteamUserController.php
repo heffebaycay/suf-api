@@ -50,6 +50,33 @@ class SteamUserController extends Controller
         ));
     }
 
+    /**
+     * @Security("has_role('ROLE_MODERATOR')")
+     */
+    public function getUserProfileByVanityURLAction($vanityURL)
+    {
+        $webAPIService = $this->get('heffe_sufapi.steamuserwebapi');
+
+        $steamId = $webAPIService->resolveVanityURL($vanityURL);
+
+        if($steamId == null)
+        {
+            throw new HttpException(Response::HTTP_BAD_REQUEST, "Failed to fetch data for this user");
+        }
+
+        return $this->redirect(
+          $this->generateUrl(
+              'heffe_sufapi_getuser_bysteamid',
+              array(
+                  'steamId64' => $steamId
+              )
+          )
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_MODERATOR')")
+     */
     public function lookupUserAction(Request $request)
     {
         $errors = array();
