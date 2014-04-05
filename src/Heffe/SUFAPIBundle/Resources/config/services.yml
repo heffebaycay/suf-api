@@ -7,7 +7,7 @@ services:
         arguments: [%heffe_sufapi.webapi_key%, @doctrine.orm.entity_manager]
     heffe_sufapi.cachedpersona:
         class: Heffe\SUFAPIBundle\Services\CachedPersonaService
-        arguments: [@heffe_sufapi.steamuserwebapi, @doctrine.orm.entity_manager]
+        arguments: [@heffe_sufapi.steamuserwebapi, @doctrine.orm.entity_manager, %heffe_sufapi.personaname_cache_duration%]
 #    heffe_sufapi.example:
 #        class: %heffe_sufapi.example.class%
 #        arguments: [@service_id, "plain_value", %parameter%]

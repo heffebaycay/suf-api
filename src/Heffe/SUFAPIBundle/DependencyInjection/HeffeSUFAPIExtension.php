@@ -23,6 +23,7 @@ class HeffeSUFAPIExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->setParameter('heffe_sufapi.webapi_key', $config['webapi_key']);
+        $container->setParameter('heffe_sufapi.personaname_cache_duration', $config['personaname_cache_duration']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

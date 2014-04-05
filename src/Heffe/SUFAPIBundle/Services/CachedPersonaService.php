@@ -10,11 +10,13 @@ class CachedPersonaService
 {
     protected $webAPIService;
     protected $em;
+    protected $personaCacheDuration;
 
-    public function __construct(SteamUserWebAPI $webAPIService, EntityManager $entityManager)
+    public function __construct(SteamUserWebAPI $webAPIService, EntityManager $entityManager, $personaCacheDuration)
     {
         $this->webAPIService = $webAPIService;
         $this->em = $entityManager;
+        $this->personaCacheDuration = $personaCacheDuration;
     }
 
     public function refreshPersona(SteamUser $steamUser)
@@ -25,7 +27,8 @@ class CachedPersonaService
         }
 
         $dateLimit = new \DateTime();
-        $dateLimit->sub( new \DateInterval('PT10M') );
+        $dtInterval = new \DateInterval( sprintf('PT%dM', $this->personaCacheDuration) );
+        $dateLimit->sub( $dtInterval );
 
 
         $persona = $steamUser->getPersona();
