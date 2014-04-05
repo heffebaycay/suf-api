@@ -20,13 +20,14 @@ class VanityURLCacheRepository extends EntityRepository
              WHERE
                 v.vanityURL = :vanityURL
              AND
-                v.dateCreated < :dateLimit
+                v.dateCreated > :dateLimit
              '
         );
 
         $dateLimit = new \DateTime();
         // Cache validity limit is 5 minutes
-        $dateLimit->add( new \DateInterval('PT5M') );
+        // So we're looking for the entries created in the last 5 minutes
+        $dateLimit->sub( new \DateInterval('PT5M') );
 
         $query->setParameter('vanityURL', $vanityURL);
         $query->setParameter('dateLimit', $dateLimit);

@@ -54,6 +54,13 @@ class SteamUser
     private $userNotes;
 
     /**
+     * @var
+     *
+     * @ORM\OneToOne(targetEntity="Heffe\SUFAPIBundle\Entity\CachedPersona")
+     */
+    private $persona;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -148,5 +155,28 @@ class SteamUser
     public function getUserNotes()
     {
         return $this->userNotes;
+    }
+
+    /**
+     * Set persona
+     *
+     * @param \Heffe\SUFAPIBundle\Entity\CachedPersona $persona
+     * @return SteamUser
+     */
+    public function setPersona(\Heffe\SUFAPIBundle\Entity\CachedPersona $persona = null)
+    {
+        $this->persona = $persona;
+
+        return $this;
+    }
+
+    /**
+     * Get persona
+     *
+     * @return \Heffe\SUFAPIBundle\Entity\CachedPersona 
+     */
+    public function getPersona()
+    {
+        return $this->persona;
     }
 }

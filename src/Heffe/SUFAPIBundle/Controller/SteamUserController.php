@@ -41,6 +41,9 @@ class SteamUserController extends Controller
             }
         }
 
+        $cachedPersonaService = $this->get('heffe_sufapi.cachedpersona');
+        $cachedPersonaService->refreshPersona($steamUser);
+
         $userNotes = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote')->getUserNotesForUser( $steamUser->getSteamId() );
 
         // At this point, we're guaranteed to have a valid SteamUser
