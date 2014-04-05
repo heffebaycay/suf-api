@@ -5,6 +5,7 @@ namespace Heffe\SUFAPIBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Heffe\SUFAPIBundle\Entity\SteamUser;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -47,5 +48,38 @@ class SteamUserController extends Controller
             'steamUser' => $steamUser,
             'userNotes' => $userNotes
         ));
+    }
+
+    public function lookupUserAction(Request $request)
+    {
+        $errors = array();
+
+        if($request->getMethod() == 'POST')
+        {
+            $query = $request->request->get('query');
+            if(!empty($query))
+            {
+                $webAPIService = $this->get('heffe_sufapi.steamuserwebapi');
+
+                $steamId = $webAPIService->identifyUser($query);
+
+                if($steamId == null)
+                {
+                    $errors[] = 'Unable to find any Steam profile matching your query';
+                }
+                else
+                {
+                    return $this->redirect(
+                        $this->generateUrl('heffe_sufapi_getuser_bysteamid', array('steamId64' => $steamId))
+                    );
+                }
+            }
+            else
+            {
+                $errors[] = 'Invalid request';
+            }
+        }
+
+        return $this->render('HeffeSUFAPIBundle:SteamUser:lookup.html.twig', array('errors' => $errors));
     }
 }

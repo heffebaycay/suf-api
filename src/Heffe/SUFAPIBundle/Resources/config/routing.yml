@@ -39,3 +39,8 @@ heffe_sufapi_removeusernote:
     defaults: { _controller: HeffeSUFAPIBundle:UserNote:removeUserNote }
     requirements:
         id: \d+
+
+heffe_sufapi_lookupuser:
+    pattern: /lookup
+    defaults: { _controller: HeffeSUFAPIBundle:SteamUser:lookupUser }
+

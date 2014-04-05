@@ -2,13 +2,17 @@
 
 namespace Heffe\SUFAPIBundle\Services;
 
+use Doctrine\ORM\EntityManager;
+
 class SteamUserWebAPI
 {
     protected $apiKey;
+    protected $em;
 
-    public function __construct($apiKey)
+    public function __construct($apiKey, EntityManager $entityManager)
     {
         $this->apiKey = $apiKey;
+        $this->em = $entityManager;
     }
 
     /**
@@ -89,6 +93,74 @@ class SteamUserWebAPI
         }
 
         return $accessLevel;
+    }
+
+    public function resolveVanityURL($vanityURL)
+    {
+        //
+        $vanityCacheRepo = $this->em->getRepository('HeffeSUFAPIBundle:VanityURLCacheEntry');
+
+        $cacheEntry = $vanityCacheRepo->getCacheEntry($vanityURL);
+        if($cacheEntry != null)
+        {
+            return $cacheEntry->getSteamId();
+        }
+
+
+        $methodURL = $this->getWebAPIUrl('ISteamUser', 'ResolveVanityURL', 1, array('key' => $this->apiKey, 'vanityurl' => $vanityURL));
+
+        $jsonData = @file_get_contents($methodURL);
+
+        if($jsonData !== false)
+        {
+            $data = json_decode($jsonData);
+            if($data != null)
+            {
+                if($data->response->success == 1)
+                {
+                    $steamId = $data->response->steamid;
+
+                    $vanityCacheRepo->setCacheEntry($vanityURL, $steamId);
+
+                    return $steamId;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function identifyUser($query)
+    {
+        $steamIdRegex = '/(\d{17})/';
+        $profileURLRegex = '/^http:\/\/steamcommunity\.com\/profiles\/(\d{17})\/?/';
+        $vanityURLRegex = '/^http:\/\/steamcommunity\.com\/id\/([a-zA-Z0-9\-_]+)\/?/';
+
+
+
+        if( preg_match($steamIdRegex, $query, $matches) )
+        {
+            // Input is a SteamID
+            $steamId = $matches[1];
+        }
+        else if( preg_match($profileURLRegex, $query, $matches))
+        {
+            // Input is /profiles/{SteamId64}
+            $steamId = $matches[1];
+        }
+        else if( preg_match($vanityURLRegex, $query, $matches) )
+        {
+            $vanityURL = $matches[1];
+            $steamId = $this->resolveVanityURL($vanityURL);
+        }
+        else
+        {
+            // Assuming input is a vanityURL
+            $vanityURL = $query;
+            $steamId = $this->resolveVanityURL($vanityURL);
+        }
+
+        return $steamId;
     }
 
     /**

@@ -31,9 +31,8 @@
                         <ul class="nav navbar-nav">
                             {% if is_granted("ROLE_MODERATOR") %}
                                 <li><a href="{{ path('heffe_sufapi_apikey') }}">API Key</a></li>
-                                <li><a href="#">Help</a></li>
+                                <li><a href="{{ path('heffe_sufapi_lookupuser') }}">Lookup</a></li>
                             {% endif %}
-                            <li><a href="">Contact</a></li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
