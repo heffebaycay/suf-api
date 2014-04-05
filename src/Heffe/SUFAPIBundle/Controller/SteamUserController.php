@@ -27,8 +27,8 @@ class SteamUserController extends Controller
         {
             // User not found
             // Let's check that this user does exist for Steam
-            $userLevel = $this->get('heffe_sufapi.steamuserwebapi')->getUserSteamLevel($steamId64);
-            if($userLevel == -1)
+            $personaName = $this->get('heffe_sufapi.steamuserwebapi')->getUserPersonaName($steamId64);
+            if($personaName == null)
             {
                 // User doesn't exist
                 throw new HttpException(Response::HTTP_BAD_REQUEST, "Failed to fetch data for this user");
@@ -37,7 +37,7 @@ class SteamUserController extends Controller
             {
                 // User does exist
                 // Let's create it
-                $steamUser = $steamUserRepo->createSteamUser( $steamId64 );
+                $steamUser = $steamUserRepo->createSteamUser( $steamId64, $personaName );
             }
         }
 

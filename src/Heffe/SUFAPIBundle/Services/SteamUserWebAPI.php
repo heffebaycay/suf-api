@@ -25,7 +25,7 @@ class SteamUserWebAPI
     {
         $methodURL = $this->getWebAPIUrl('IPlayerService', 'GetSteamLevel', 1, array('key' => $this->apiKey, 'steamid' => $steamId));
 
-        $jsonData = @file_get_contents($methodURL);
+        $jsonData = $this->sendRequest($methodURL);
         if($jsonData !== false)
         {
             $data = json_decode($jsonData);
@@ -51,7 +51,7 @@ class SteamUserWebAPI
     {
         $methodUrl = $this->getWebAPIUrl('ISteamUser', 'GetPlayerSummaries', 2, array('key' => $this->apiKey, 'steamids' => $steamId));
 
-        $jsonData = @file_get_contents($methodUrl);
+        $jsonData = $this->sendRequest($methodUrl);
         $data = json_decode($jsonData);
         if($data != null)
         {
@@ -71,7 +71,7 @@ class SteamUserWebAPI
     {
         $methodUrl = $this->getWebAPIUrl('IPlayerService', 'GetBadges', 1, array( 'key' => $this->apiKey, 'steamid' => $steamId ));
 
-        $jsonData = @file_get_contents($methodUrl);
+        $jsonData = $this->sendRequest($methodUrl);
 
         $data = json_decode($jsonData);
 
@@ -109,7 +109,7 @@ class SteamUserWebAPI
 
         $methodURL = $this->getWebAPIUrl('ISteamUser', 'ResolveVanityURL', 1, array('key' => $this->apiKey, 'vanityurl' => $vanityURL));
 
-        $jsonData = @file_get_contents($methodURL);
+        $jsonData = $this->sendRequest($methodURL);
 
         if($jsonData !== false)
         {
@@ -194,6 +194,33 @@ class SteamUserWebAPI
         }
 
         return $url;
+    }
+
+    private function sendRequest($methodURL)
+    {
+        $curl = curl_init();
+
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => $methodURL,
+                CURLOPT_RETURNTRANSFER => 1,
+                CURLOPT_SSL_VERIFYPEER => 1
+            )
+        );
+
+        $result = curl_exec($curl);
+
+        curl_close($curl);
+
+        if($result !== false)
+        {
+            return $result;
+        }
+        else
+        {
+            return null;
+        }
     }
 }
 

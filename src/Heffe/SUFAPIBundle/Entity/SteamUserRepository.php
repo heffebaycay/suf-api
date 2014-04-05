@@ -16,14 +16,21 @@ class SteamUserRepository extends EntityRepository
      * Create a SteamUser and persist it to the database
      *
      * @param string $steamId The SteamId of the SteamUser to create
+     * @param string $personaName The persona name to assign to this Steam User
      * @return SteamUser The newly created SteamUser object
      */
-    public function createSteamUser($steamId)
+    public function createSteamUser($steamId, $personaName)
     {
         $steamUser = new SteamUser();
         $steamUser->setSteamId($steamId);
         $steamUser->setDateCreated(new \DateTime());
 
+        $persona = new CachedPersona();
+        $persona->setDateCreated(new \DateTime());
+        $persona->setPersonaName($personaName);
+        $steamUser->setPersona($persona);
+
+        $this->_em->persist($persona);
         $this->_em->persist($steamUser);
         $this->_em->flush();
 
