@@ -2,7 +2,7 @@
 <div class="userNoteBox">
     <h5><a href="http://steamcommunity.com/profiles/{{ userNote.author.steamId }}">{{ userNote.author.persona }}</a> posted:</h5>
     <div class="userNoteContent">
-        {{ userNote.content }}
+        {{ userNote.content|nl2br }}
     </div>
     <div class="userNoteBoxBottom">
         <p>
