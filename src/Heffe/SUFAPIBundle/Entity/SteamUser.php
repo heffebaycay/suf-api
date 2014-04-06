@@ -12,7 +12,7 @@ use JMS\Serializer\Annotation\SerializedName;
  * SteamUser
  *
  * @ORM\Table(name="steam_user")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Heffe\SUFAPIBundle\Entity\SteamUserRepository")
  *
  * @ExclusionPolicy("all")
  */
@@ -52,6 +52,13 @@ class SteamUser
      * @ORM\OneToMany(targetEntity="Heffe\SUFAPIBundle\Entity\UserNote", mappedBy="target")
      */
     private $userNotes;
+
+    /**
+     * @var
+     *
+     * @ORM\OneToOne(targetEntity="Heffe\SUFAPIBundle\Entity\CachedPersona")
+     */
+    private $persona;
 
     /**
      * Get id
@@ -148,5 +155,28 @@ class SteamUser
     public function getUserNotes()
     {
         return $this->userNotes;
+    }
+
+    /**
+     * Set persona
+     *
+     * @param \Heffe\SUFAPIBundle\Entity\CachedPersona $persona
+     * @return SteamUser
+     */
+    public function setPersona(\Heffe\SUFAPIBundle\Entity\CachedPersona $persona = null)
+    {
+        $this->persona = $persona;
+
+        return $this;
+    }
+
+    /**
+     * Get persona
+     *
+     * @return \Heffe\SUFAPIBundle\Entity\CachedPersona 
+     */
+    public function getPersona()
+    {
+        return $this->persona;
     }
 }

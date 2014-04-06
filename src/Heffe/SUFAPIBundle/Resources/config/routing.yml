@@ -13,3 +13,42 @@ heffe_sufapi_apikey:
 heffe_sufapi_revoke_apikey:
     pattern: /apiKey/revoke
     defaults: { _controller: HeffeSUFAPIBundle:Default:revokeApiKey }
+
+heffe_sufapi_getuser_bysteamid:
+    pattern: /profiles/{steamId64}{trailingSlash}
+    defaults: { _controller: HeffeSUFAPIBundle:SteamUser:getUserProfileBySteamId, trailingSlash: '' }
+    requirements:
+        steamId64: \d{17}
+        trailingSlash: "\/?"
+
+heffe_sufapi_getuser_byvanityurl:
+    pattern: /id/{vanityURL}{trailingSlash}
+    defaults: { _controller: HeffeSUFAPIBundle:SteamUser:getUserProfileByVanityURL, trailingSlash: '' }
+    requirements:
+        vanityUrl: "[a-zA-Z0-9\-_]+"
+        trailingSlash: "\/?"
+
+
+heffe_sufapi_createusernote:
+    pattern: /profiles/{steamId64}/usernotes/new
+    defaults: { _controller: HeffeSUFAPIBundle:UserNote:createUserNote }
+    requirements:
+        steamId64: \d{17}
+
+heffe_sufapi_updateusernote:
+    pattern: /profiles/{steamId64}/usernotes/edit/{id}
+    defaults: { _controller: HeffeSUFAPIBundle:UserNote:updateUserNote }
+    requirements:
+        steamId64: \d{17}
+        id: \d+
+
+heffe_sufapi_removeusernote:
+    pattern: /profiles/{steamId64}/usernotes/remove/{id}
+    defaults: { _controller: HeffeSUFAPIBundle:UserNote:removeUserNote }
+    requirements:
+        id: \d+
+
+heffe_sufapi_lookupuser:
+    pattern: /lookup
+    defaults: { _controller: HeffeSUFAPIBundle:SteamUser:lookupUser }
+

@@ -13,3 +13,7 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+heffe_sufapi:
+    webapi_key: 'ABCDEF'
+    personaname_cache_duration: 10

@@ -1,0 +1,27 @@
+{# src/Heffe/SUFAPIBundle/Resources/views/UserNote/userNoteTemplate.html.twig #}
+<div class="userNoteBox">
+    <h5><a href="http://steamcommunity.com/profiles/{{ userNote.author.steamId }}">{{ userNote.author.persona }}</a> posted:</h5>
+    <div class="userNoteContent">
+        {{ userNote.content }}
+    </div>
+    <div class="userNoteBoxBottom">
+        <p>
+            Posted on {{ userNote.dateCreated|date('Y-m-d @ H:i', 'UTC') }}
+            {% if userNote.dateUpdated is not null %}
+                <br/>--- Last updated on {{ userNote.dateUpdated|date('Y-m-d @ H:i', 'UTC') }} ---
+            {% endif %}
+        </p>
+    </div>
+    {% if app.security.token.user is defined and app.security.token.user.steamId == userNote.author.steamId %}
+        <p>
+            <a class="btn btn-default" href="{{ path('heffe_sufapi_updateusernote', {'steamId64': userNote.target.steamId, 'id': userNote.id}) }}">
+                <span class="glyphicon glyphicon-edit"></span>
+                Edit note
+            </a>
+            <a class="btn btn-default" href="{{ path('heffe_sufapi_removeusernote', {'steamId64': userNote.target.steamId, 'id': userNote.id }) }}">
+                <span class="glyphicon glyphicon-remove"></span>
+                Remove note
+            </a>
+        </p>
+    {% endif %}
+</div>

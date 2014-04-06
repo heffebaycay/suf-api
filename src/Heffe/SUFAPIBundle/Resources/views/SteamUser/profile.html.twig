@@ -1,0 +1,30 @@
+{# src/Heffe/SUFAPIBundle/Resources/views/SteamUser/profile.html.twig #}
+
+{% extends "HeffeSUFAPIBundle:Default:layout.html.twig" %}
+
+{% block body %}
+    {% if userNotes|length == 0 %}
+        <div class="alert alert-info">
+            <p>No user notes on record for user <a href="http://steamcommunity.com/profiles/{{ steamUser.steamId }}">{{ steamUser.persona.personaName }}</a>.</p>
+            <p>
+                <a href="{{ path('heffe_sufapi_createusernote', { 'steamId64': steamUser.steamId}) }}">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Click here to create one
+                </a>
+            </p>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p>There are {{ userNotes|length }} notes on record for {{ steamUser.persona.personaName }} ({{ steamUser.steamId }}).</p>
+            <p>
+                <a href="{{ path('heffe_sufapi_createusernote', { 'steamId64': steamUser.steamId}) }}">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Click here to create one
+                </a>
+            </p>
+        </div>
+        {% for userNote in userNotes %}
+            {% include 'HeffeSUFAPIBundle:UserNote:userNoteTemplate.html.twig' %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}

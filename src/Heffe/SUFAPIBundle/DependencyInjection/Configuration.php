@@ -25,6 +25,12 @@ class Configuration implements ConfigurationInterface
                 ->defaultValue('')
                 ->info('A valid API key to access the Steam WebAPI service')
             ->end()
+            ->integerNode('personaname_cache_duration')
+                ->info('The number of minutes for which persona names are cached')
+                ->defaultValue(10)
+                ->min(1)
+                ->max(59)
+            ->end()
         ->end();
 
         // Here you should define the parameters that are allowed to
