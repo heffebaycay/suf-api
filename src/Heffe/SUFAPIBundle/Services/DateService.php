@@ -33,4 +33,18 @@ class DateService
 
         return $date;
     }
+
+    public static function convertUserNotesDatesToLocal($userNotes, $offset)
+    {
+        if($userNotes != null)
+        {
+            foreach($userNotes as $note)
+            {
+                $note->setDateCreated( DateService::convertDateToLocal($note->getDateCreated(), $offset) );
+                $note->setDateUpdated( DateService::convertDateToLocal($note->getDateUpdated(), $offset));
+            }
+        }
+
+        return $userNotes;
+    }
 }
