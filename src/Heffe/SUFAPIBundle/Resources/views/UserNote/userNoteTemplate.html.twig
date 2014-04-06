@@ -6,9 +6,9 @@
     </div>
     <div class="userNoteBoxBottom">
         <p>
-            Posted on {{ userNote.dateCreated|date('Y-m-d @ H:i') }}
+            Posted on {{ userNote.dateCreated|date('Y-m-d @ H:i', 'UTC') }}
             {% if userNote.dateUpdated is not null %}
-                <br/>--- Last updated on {{ userNote.dateUpdated|date('Y-m-d @ H:i') }} ---
+                <br/>--- Last updated on {{ userNote.dateUpdated|date('Y-m-d @ H:i', 'UTC') }} ---
             {% endif %}
         </p>
     </div>

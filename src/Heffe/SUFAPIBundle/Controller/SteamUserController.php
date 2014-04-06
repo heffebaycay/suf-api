@@ -2,6 +2,7 @@
 
 namespace Heffe\SUFAPIBundle\Controller;
 
+use Heffe\SUFAPIBundle\Services\DateService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Heffe\SUFAPIBundle\Entity\SteamUser;
@@ -15,7 +16,7 @@ class SteamUserController extends Controller
     /**
      * @Security("has_role('ROLE_MODERATOR')")
      */
-    public function getUserProfileBySteamIdAction($steamId64)
+    public function getUserProfileBySteamIdAction($steamId64, Request $request)
     {
         // Trying to fetch the matching user
         $steamUserRepo = $this
@@ -45,6 +46,12 @@ class SteamUserController extends Controller
         $cachedPersonaService->refreshPersona($steamUser);
 
         $userNotes = $this->getDoctrine()->getRepository('HeffeSUFAPIBundle:UserNote')->getUserNotesForUser( $steamUser->getSteamId() );
+
+        if($request->cookies->has('timezoneOffset') == true)
+        {
+            $offset = $request->cookies->getInt('timezoneOffset');
+            $userNotes = DateService::convertUserNotesDatesToLocal($userNotes, $offset);
+        }
 
         // At this point, we're guaranteed to have a valid SteamUser
         return $this->render('HeffeSUFAPIBundle:SteamUser:profile.html.twig', array(
