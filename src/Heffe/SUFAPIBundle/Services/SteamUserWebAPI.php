@@ -16,6 +16,42 @@ class SteamUserWebAPI
     }
 
     /**
+     * @param $steamId
+     * @return ProfileData|null
+     */
+    public function getUserProfileData($steamId)
+    {
+        $methodUrl = $this->getWebAPIUrl('ISteamUser', 'GetPlayerSummaries', 2, array('key' => $this->apiKey, 'steamids' => $steamId));
+
+        $jsonData = $this->sendRequest($methodUrl);
+        $data = json_decode($jsonData);
+        if($data != null)
+        {
+            if( count($data->response->players) == 1 )
+            {
+                $player = $data->response->players[0];
+
+                $personaName = $player->personaname;
+                $avatar = $player->avatar;
+
+                $profileData = new ProfileData();
+
+                if(empty($personaName))
+                {
+                    $personaName = '<unknown>';
+                }
+
+                $profileData->setPersonaName($personaName);
+                $profileData->setAvatarUrl($avatar);
+
+                return $profileData;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Fetches the Steam Level for a given Steam User
      *
      * @param string $steamId The SteamId of the user
@@ -229,4 +265,31 @@ abstract class UserAccessLevel
     const User = 0;
     const CommunityModerator = 1;
     const Valve = 2;
+}
+
+class ProfileData
+{
+    protected $personaName;
+
+    protected $avatarUrl;
+
+    public function getPersonaName()
+    {
+        return $this->personaName;
+    }
+
+    public function setPersonaName($personaName)
+    {
+        $this->personaName = $personaName;
+    }
+
+    public function getAvatarUrl()
+    {
+        return $this->avatarUrl;
+    }
+
+    public function setAvatarUrl($avatarUrl)
+    {
+        $this->avatarUrl = $avatarUrl;
+    }
 }
