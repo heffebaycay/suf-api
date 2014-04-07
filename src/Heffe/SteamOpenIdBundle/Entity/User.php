@@ -88,6 +88,16 @@ class User implements UserInterface, \Serializable
      */
     private $userNotesCreated;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="avatar_url", type="text")
+     * @Expose
+     * @Type("string")
+     * @SerializedName("avatar_url")
+     */
+    private $avatarURL;
+
     public function __construct()
     {
         $this->dateCreated = new \DateTime();
@@ -437,5 +447,28 @@ class User implements UserInterface, \Serializable
     public function getUserNotesCreated()
     {
         return $this->userNotesCreated;
+    }
+
+    /**
+     * Set avatarURL
+     *
+     * @param string $avatarURL
+     * @return User
+     */
+    public function setAvatarURL($avatarURL)
+    {
+        $this->avatarURL = $avatarURL;
+
+        return $this;
+    }
+
+    /**
+     * Get avatarURL
+     *
+     * @return string 
+     */
+    public function getAvatarURL()
+    {
+        return $this->avatarURL;
     }
 }
