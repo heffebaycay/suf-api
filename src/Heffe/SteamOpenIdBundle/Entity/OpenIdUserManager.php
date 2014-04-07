@@ -43,6 +43,16 @@ class OpenIdUserManager extends BaseUserManager
 
             $tmpUser->addLastLogin($lastLogin);
 
+            // Updating profile data
+            $webAPIService = $this->container->get('heffe_sufapi.steamuserwebapi');
+            $profileData = $webAPIService->getUserProfileData($tmpUser->getSteamId());
+            if($profileData != null)
+            {
+                $tmpUser->setPersona( htmlspecialchars($profileData->getPersonaName()) );
+                $tmpUser->setAvatarURL( $profileData->getAvatarUrl() );
+                $tmpUser->setDateUpdated(new \DateTime());
+            }
+
             $this->em->persist($lastLogin);
             $this->em->persist($tmpUser);
             $this->em->flush();
@@ -73,8 +83,12 @@ class OpenIdUserManager extends BaseUserManager
             $user->addGroup($userGroup);
         }
 
-        $userPersona = $userWebAPIService->getUserPersonaName($user->getSteamId());
-        $user->setPersona($userPersona);
+        $userProfileData = $userWebAPIService->getUserProfileData($user->getSteamId());
+        if($userProfileData != null)
+        {
+            $user->setPersona($userProfileData->getPersonaName());
+            $user->setAvatarURL($userProfileData->getAvatarUrl());
+        }
 
         $this->em->persist($user);
         $this->em->flush();
